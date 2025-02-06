@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hot Wheels Car Collection</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;  /* Centers the content horizontally */
+      align-items: center;  /* Centers the content vertically */
+      height: 100vh;  /* Makes sure the content takes the full viewport height */
+      margin: 0;
+      text-align: center;
+    }
+    .car-list-container {
+      width: 90%;
+      max-width: 1000px;  /* Set a max width for the container */
+    }
+    .car-item {
+      display: flex;  /* Align items in a row (horizontal layout) */
+      justify-content: flex-start;  /* Aligns items at the start of the flex container */
+      align-items: center;  /* Ensures items are vertically aligned */
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+    }
+    .car-item img {
+      width: 150px;  /* Adjust image width */
+      height: auto;
+      margin-right: 20px;  /* Adds space between the image and the text */
+    }
+    .car-details {
+      text-align: left;  /* Align text to the left */
+      max-width: 500px;  /* Limits the width of the details */
+    }
+    h3 {
+      margin-top: 0;
+    }
+    .button-container {
+      margin-top: 20px;
+    }
+    .btn {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 1.2em;
+      cursor: pointer;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    .btn:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div class="car-list-container">
+    <h1>Hot Wheels Car Collection</h1>
+    <div id="car-list"></div>
+
+    <script>
+      // Fetch data from the backend API
+      fetch('/api/cars')  // Corrected endpoint
+        .then(response => response.json())
+        .then(data => {
+          const carList = document.getElementById('car-list');
+          data.forEach(car => {
+            // Create a div for each car and add relevant information
+            const carItem = document.createElement('div');
+            carItem.classList.add('car-item');
+            
+            // Create a div for the car image and details
+            let carDetails = `
+              <div class="car-details">
+                <h3>${car.model_name}</h3>
+            `;
+            
+            // Conditionally add data if it's not null
+            if (car.brand) carDetails += `<p>Brand: ${car.brand}</p>`;
+            if (car.year_of_release) carDetails += `<p>Year: ${car.year_of_release}</p>`;
+            if (car.price_paid !== null) carDetails += `<p>Price Paid: $${car.price_paid}</p>`;
+            if (car.current_value !== null) carDetails += `<p>Current Value: $${car.current_value}</p>`;
+            if (car.color) carDetails += `<p>Color: ${car.color}</p>`;
+            if (car.material) carDetails += `<p>Material: ${car.material}</p>`;
+            if (car.car_condition) carDetails += `<p>Car Condition: ${car.car_condition}</p>`;
+            if (car.rarity) carDetails += `<p>Rarity: ${car.rarity}</p>`;
+            if (car.notes) carDetails += `<p>Notes: ${car.notes}</p>`;
+            
+            // Close the details div
+            carDetails += `</div>`;
+
+            // Add the final details to the car item
+            carItem.innerHTML = `
+              <img src="${car.photo_url}" alt="${car.model_name}">
+              ${carDetails}
+            `;
+            carList.appendChild(carItem);
+          });
+        })
+        .catch(err => {
+          console.error('Error fetching cars:', err);
+          const carList = document.getElementById('car-list');
+          carList.innerHTML = 'Failed to load cars. Please try again later.';
+        });
+    </script>
+
+    <div class="button-container">
+      <!-- Return to the main page -->
+      <button class="btn" onclick="window.location.href='/'">Return to Main Page</button>
+    </div>
+  </div>
+</body>
+</html>

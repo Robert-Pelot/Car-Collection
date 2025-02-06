@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hot Wheels Car Collection</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    h1 {
+      font-size: 2em;
+      color: #333;
+    }
+    .button-container {
+      margin-top: 20px;
+    }
+    .btn {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 1.2em;
+      cursor: pointer;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    .btn:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Welcome to Hot Wheels Car Collection</h1>
+  <h2>Featured Car: Hot Rod</h2>
+  <img src="https://robertusasa.blob.core.windows.net/car-images/Car1.jpg" alt="So Fast!" width="300" />
+
+  <div class="button-container">
+    <!-- Button to navigate to the add-car page -->
+    <button class="btn" onclick="window.location.href='/add-car'">Add a Car</button>
+
+    <!-- Button to navigate to the view-cars page -->
+    <button class="btn" onclick="window.location.href='/view-cars'">View Cars</button>
+  </div>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Hot Wheels Car</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    .button-container {
+      margin-top: 20px;
+    }
+    .btn {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 1.2em;
+      cursor: pointer;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    .btn:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <h1>Add New Hot Wheels Car</h1>
+
+  <form id="carForm" enctype="multipart/form-data">
+    <label for="brand">Brand:</label>
+    <input type="text" id="brand" name="brand" required><br><br>
+
+    <label for="model_name">Model Name:</label>
+    <input type="text" id="model_name" name="model_name" required><br><br>
+
+    <label for="year_of_release">Year of Release:</label>
+    <input type="number" id="year_of_release" name="year_of_release" required><br><br>
+
+    <label for="series_id">Series ID (optional):</label>
+    <input type="number" id="series_id" name="series_id"><br><br>
+
+    <label for="car_type">Car Type:</label>
+    <input type="text" id="car_type" name="car_type"><br><br>
+
+    <label for="color">Color:</label>
+    <input type="text" id="color" name="color"><br><br>
+
+    <label for="material">Material:</label>
+    <input type="text" id="material" name="material"><br><br>
+
+    <label for="car_condition">Car Condition:</label>
+    <input type="text" id="car_condition" name="car_condition"><br><br>
+
+    <label for="rarity">Rarity:</label>
+    <input type="text" id="rarity" name="rarity"><br><br>
+
+    <label for="price_paid">Price Paid:</label>
+    <input type="number" id="price_paid" name="price_paid" step="0.01"><br><br>
+
+    <label for="current_value">Current Value:</label>
+    <input type="number" id="current_value" name="current_value" step="0.01"><br><br>
+
+    <label for="location_id">Location ID:</label>
+    <input type="number" id="location_id" name="location_id"><br><br>
+
+    <label for="notes">Notes:</label>
+    <textarea id="notes" name="notes"></textarea><br><br>
+
+    <!-- Replace photo_url with file input -->
+    <label for="car-photo">Upload Car Photo:</label>
+    <input type="file" id="car-photo" name="car-photo" accept="image/*"><br><br>
+
+    <button type="submit">Add Car</button>
+  </form>
+
+  <script>
+    const form = document.getElementById('carForm');
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault(); // Prevent default form submission
+
+      // Create a FormData object to send the file along with other form data
+      const formData = new FormData(form);
+
+      try {
+        // Send the file to the server first for Azure Blob upload
+        const uploadResponse = await fetch('/upload-photo', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error('Image upload failed');
+        }
+
+        // Get the uploaded photo URL from the server response
+        const { photoUrl } = await uploadResponse.json();
+
+        // Now send the car data to the server to add it to the database
+        const carData = {
+          brand: formData.get('brand'),
+          model_name: formData.get('model_name'),
+          year_of_release: formData.get('year_of_release'),
+          series_id: formData.get('series_id') || null,
+          car_type: formData.get('car_type') || null,
+          color: formData.get('color') || null,
+          material: formData.get('material') || null,
+          car_condition: formData.get('car_condition') || null,
+          rarity: formData.get('rarity') || null,
+          price_paid: formData.get('price_paid') || null,
+          current_value: formData.get('current_value') || null,
+          location_id: formData.get('location_id') || null,
+          notes: formData.get('notes') || null,
+          photo_url: photoUrl  // Send the URL of the uploaded photo
+        };
+
+        // Send the car data (including photo URL) to the server to store it in the database
+        const addCarResponse = await fetch('/add-car', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(carData)
+        });
+
+        if (addCarResponse.ok) {
+          alert('Car added successfully!');
+        } else {
+          alert('Error adding car.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error: ' + error.message);
+      }
+    });
+  </script>
+
+  <div class="button-container">
+    <!-- Return to the main page -->
+    <button class="btn" onclick="window.location.href='/'">Return to Main Page</button>
+  </div>
+</body>
+</html>
