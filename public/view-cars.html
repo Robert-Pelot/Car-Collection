@@ -9,26 +9,16 @@
   <style>
     body {
       background-image: url('/images/HotWheels-Backdrop.jpg');
-      background-position: top center; /* Centers the background image */
+      background-position: top center; 
       background-repeat: repeat;
-      height: 100vh; /* Ensures the body takes up the full height of the viewport */
+      height: 100vh;
       font-family: Arial, sans-serif;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh;
       margin: 0;
       text-align: center;
-    }
-
-    header {
-      position: sticky;
-      top: 0;
-      background-color: #fff;
-      padding: 20px 0;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      z-index: 10;
     }
 
     .car-list-container {
@@ -61,7 +51,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      width: 33%; /* 3 equal-width columns */
+      width: 33%;
       padding: 10px;
     }
 
@@ -110,22 +100,20 @@
   </style>
 </head>
 <body>
-  <!-- Sticky Header -->
   <header class="header-banner">
     <img src="../../images/HotWheels-Banner.png" alt="HotWheels Banner" class="banner-img">
   </header>
-  <!-- Scrollable Car List Container -->
+
   <div class="car-list-container">
     <div id="car-list"></div>
   </div>
 
-  <!-- Button at the Bottom -->
   <div class="button-container">
     <button class="btn" onclick="window.location.href='/'">Return to Main Page</button>
   </div>
 
   <script>
-    fetch('/api/cars') // Ensure this endpoint fetches all the required car data
+    fetch('/api/cars')
       .then(response => response.json())
       .then(data => {
         const carList = document.getElementById('car-list');
@@ -133,25 +121,27 @@
           const carItem = document.createElement('div');
           carItem.classList.add('car-item');
 
-          // Create the car content with three columns: left, center, right
           let carContent = `
             <div class="car-column car-left">
               ${car.front_photo_url ? `<img src="${car.front_photo_url}" alt="Front View">` : ''}
             </div>
             <div class="car-column car-center">
               <div class="car-details">
-                <h3>${car.Brand ? car.Brand : ''}</h3>
-                ${car.Name ? `<p>Make: ${car.Name}</p>` : ''}
-				${car.Model ? `<p>Model: ${car.Model}</p>` : ''}
+                <h3>${car.BrandID ? car.BrandID : ''}</h3>
+                ${car.Model ? `<p>Model: ${car.Model}</p>` : ''}
+                ${car.Make ? `<p>Make: ${car.Make}</p>` : ''}
+                ${car.Year ? `<p>Year of Release: ${car.Year}</p>` : ''}
                 ${car.Series ? `<p>Series: ${car.Series}</p>` : ''}
-		        ${car.Year ? `<p>Year: ${car.Year}</p>` : ''}
+                ${car.car_type ? `<p>Car Type: ${car.car_type}</p>` : ''}
+                ${car.Color ? `<p>Color: ${car.Color}</p>` : ''}
+                ${car.MaterialID ? `<p>Material: ${car.MaterialID}</p>` : ''}
+                ${car.Car_condition ? `<p>Condition: ${car.Car_condition}</p>` : ''}
+                ${car.Rarity ? `<p>Rarity: ${car.Rarity}</p>` : ''}
                 ${car.OriginalPrice ? `<p>Price Paid: $${car.OriginalPrice}</p>` : ''}
                 ${car.CurrentValue ? `<p>Current Value: $${car.CurrentValue}</p>` : ''}
-                ${car.Color ? `<p>Color: ${car.Color}</p>` : ''}
-                ${car.materialID ? `<p>Material: ${car.materialID}</p>` : ''}
-                ${car.car_condition ? `<p>Condition: ${car.car_condition}</p>` : ''}
-                ${car.Rarity ? `<p>Rarity: ${car.Rarity}</p>` : ''}
-                ${car.ReleaseType ? `<p>Rarity: ${car.ReleaseType}</p>` : ''}
+                ${car.StorageID ? `<p>Storage Location: ${car.StorageID}</p>` : ''}
+                ${car.CategoryID ? `<p>Vehicle Category: ${car.CategoryID}</p>` : ''}
+                ${car.PurchaseID ? `<p>Purchased From: ${car.PurchaseID}</p>` : ''}
                 ${car.notes ? `<p>Notes: ${car.notes}</p>` : ''}
               </div>
               ${car.side_photo_url ? `<img src="${car.side_photo_url}" alt="Side View">` : ''}
@@ -161,7 +151,6 @@
             </div>
           `;
 
-          // Add the content to the car item
           carItem.innerHTML = carContent;
           carList.appendChild(carItem);
         });
@@ -171,12 +160,6 @@
         const carList = document.getElementById('car-list');
         carList.innerHTML = 'Failed to load cars. Please try again later.';
       });
-  </script>
-  <script>
-    // Example: Change URL dynamically
-    if (window.history.replaceState) {
-      window.history.replaceState(null, null, "/GottaGetThereSomehow-url");
-    }
   </script>
 </body>
 </html>
