@@ -3,49 +3,97 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="../images/Camaro.png" type="image/png">
   <title>Hot Wheels Car Collection</title>
   <style>
     body {
+      background-image: url('/images/HotWheels-Backdrop.jpg');
+      background-position: top center; /* Centers the background image */
+      background-repeat: repeat;
+      height: 100vh; /* Ensures the body takes up the full height of the viewport */
       font-family: Arial, sans-serif;
       display: flex;
-      justify-content: center;  /* Centers the content horizontally */
-      align-items: center;  /* Centers the content vertically */
-      height: 100vh;  /* Makes sure the content takes the full viewport height */
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       margin: 0;
       text-align: center;
     }
-    .car-list-container {
-      width: 90%;
-      max-width: 1000px;  /* Set a max width for the container */
+
+    header {
+      position: sticky;
+      top: 0;
+      background-color: #fff;
+      padding: 20px 0;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      z-index: 10;
     }
+
+    .car-list-container {
+      flex: 1;
+      width: 90%;
+      max-width: 1200px;
+      height: calc(100vh - 120px);
+      overflow-y: auto;
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     .car-item {
-      display: flex;  /* Align items in a row (horizontal layout) */
-      justify-content: flex-start;  /* Aligns items at the start of the flex container */
-      align-items: center;  /* Ensures items are vertically aligned */
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
       margin-bottom: 20px;
       border: 1px solid #ddd;
       padding: 10px;
       border-radius: 8px;
       background-color: #f9f9f9;
+      width: 100%;
+      max-width: 1000px;
     }
-    .car-item img {
-      width: 150px;  /* Adjust image width */
+
+    .car-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 33%; /* 3 equal-width columns */
+      padding: 10px;
+    }
+
+    .car-left, .car-right {
+      max-width: 250px;
+    }
+
+    .car-center {
+      flex: 2;
+    }
+
+    .car-column img {
+      width: 100%;
       height: auto;
-      margin-right: 20px;  /* Adds space between the image and the text */
+      max-width: 200px;
+      object-fit: contain;
     }
+
     .car-details {
-      text-align: left;  /* Align text to the left */
-      max-width: 500px;  /* Limits the width of the details */
+      text-align: left;
+      width: 100%;
     }
-    h3 {
-      margin-top: 0;
-    }
+
     .button-container {
       margin-top: 20px;
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
     }
+
     .btn {
       padding: 10px 20px;
-      margin: 10px;
       font-size: 1.2em;
       cursor: pointer;
       border: none;
@@ -54,66 +102,80 @@
       border-radius: 5px;
       transition: background-color 0.3s;
     }
+
     .btn:hover {
       background-color: #45a049;
     }
   </style>
 </head>
 <body>
+  <!-- Sticky Header -->
+  <header class="header-banner">
+    <img src="../../images/HotWheels-Banner.png" alt="HotWheels Banner" class="banner-img">
+  </header>
+  <!-- Scrollable Car List Container -->
   <div class="car-list-container">
-    <h1>Hot Wheels Car Collection</h1>
     <div id="car-list"></div>
-
-    <script>
-      // Fetch data from the backend API
-      fetch('/api/cars')  // Corrected endpoint
-        .then(response => response.json())
-        .then(data => {
-          const carList = document.getElementById('car-list');
-          data.forEach(car => {
-            // Create a div for each car and add relevant information
-            const carItem = document.createElement('div');
-            carItem.classList.add('car-item');
-            
-            // Create a div for the car image and details
-            let carDetails = `
-              <div class="car-details">
-                <h3>${car.model_name}</h3>
-            `;
-            
-            // Conditionally add data if it's not null
-            if (car.brand) carDetails += `<p>Brand: ${car.brand}</p>`;
-            if (car.year_of_release) carDetails += `<p>Year: ${car.year_of_release}</p>`;
-            if (car.price_paid !== null) carDetails += `<p>Price Paid: $${car.price_paid}</p>`;
-            if (car.current_value !== null) carDetails += `<p>Current Value: $${car.current_value}</p>`;
-            if (car.color) carDetails += `<p>Color: ${car.color}</p>`;
-            if (car.material) carDetails += `<p>Material: ${car.material}</p>`;
-            if (car.car_condition) carDetails += `<p>Car Condition: ${car.car_condition}</p>`;
-            if (car.rarity) carDetails += `<p>Rarity: ${car.rarity}</p>`;
-            if (car.notes) carDetails += `<p>Notes: ${car.notes}</p>`;
-            
-            // Close the details div
-            carDetails += `</div>`;
-
-            // Add the final details to the car item
-            carItem.innerHTML = `
-              <img src="${car.photo_url}" alt="${car.model_name}">
-              ${carDetails}
-            `;
-            carList.appendChild(carItem);
-          });
-        })
-        .catch(err => {
-          console.error('Error fetching cars:', err);
-          const carList = document.getElementById('car-list');
-          carList.innerHTML = 'Failed to load cars. Please try again later.';
-        });
-    </script>
-
-    <div class="button-container">
-      <!-- Return to the main page -->
-      <button class="btn" onclick="window.location.href='/'">Return to Main Page</button>
-    </div>
   </div>
+
+  <!-- Button at the Bottom -->
+  <div class="button-container">
+    <button class="btn" onclick="window.location.href='/'">Return to Main Page</button>
+  </div>
+
+  <script>
+    fetch('/api/cars') // Ensure this endpoint fetches all the required car data
+      .then(response => response.json())
+      .then(data => {
+        const carList = document.getElementById('car-list');
+        data.forEach(car => {
+          const carItem = document.createElement('div');
+          carItem.classList.add('car-item');
+
+          // Create the car content with three columns: left, center, right
+          let carContent = `
+            <div class="car-column car-left">
+              ${car.front_photo_url ? `<img src="${car.front_photo_url}" alt="Front View">` : ''}
+            </div>
+            <div class="car-column car-center">
+              <div class="car-details">
+                <h3>${car.Brand ? car.Brand : ''}</h3>
+                ${car.Name ? `<p>Make: ${car.Name}</p>` : ''}
+				${car.Model ? `<p>Model: ${car.Model}</p>` : ''}
+                ${car.Series ? `<p>Series: ${car.Series}</p>` : ''}
+		        ${car.Year ? `<p>Year: ${car.Year}</p>` : ''}
+                ${car.OriginalPrice ? `<p>Price Paid: $${car.OriginalPrice}</p>` : ''}
+                ${car.CurrentValue ? `<p>Current Value: $${car.CurrentValue}</p>` : ''}
+                ${car.Color ? `<p>Color: ${car.Color}</p>` : ''}
+                ${car.materialID ? `<p>Material: ${car.materialID}</p>` : ''}
+                ${car.car_condition ? `<p>Condition: ${car.car_condition}</p>` : ''}
+                ${car.Rarity ? `<p>Rarity: ${car.Rarity}</p>` : ''}
+                ${car.ReleaseType ? `<p>Rarity: ${car.ReleaseType}</p>` : ''}
+                ${car.notes ? `<p>Notes: ${car.notes}</p>` : ''}
+              </div>
+              ${car.side_photo_url ? `<img src="${car.side_photo_url}" alt="Side View">` : ''}
+            </div>
+            <div class="car-column car-right">
+              ${car.back_photo_url ? `<img src="${car.back_photo_url}" alt="Back View">` : ''}
+            </div>
+          `;
+
+          // Add the content to the car item
+          carItem.innerHTML = carContent;
+          carList.appendChild(carItem);
+        });
+      })
+      .catch(err => {
+        console.error('Error fetching cars:', err);
+        const carList = document.getElementById('car-list');
+        carList.innerHTML = 'Failed to load cars. Please try again later.';
+      });
+  </script>
+  <script>
+    // Example: Change URL dynamically
+    if (window.history.replaceState) {
+      window.history.replaceState(null, null, "/GottaGetThereSomehow-url");
+    }
+  </script>
 </body>
 </html>

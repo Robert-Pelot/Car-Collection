@@ -1,146 +1,370 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add Hot Wheels Car</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 50px;
-    }
-    .button-container {
-      margin-top: 20px;
-    }
-    .btn {
-      padding: 10px 20px;
-      margin: 10px;
-      font-size: 1.2em;
-      cursor: pointer;
-      border: none;
-      background-color: #4CAF50;
-      color: white;
-      border-radius: 5px;
-      transition: background-color 0.3s;
-    }
-    .btn:hover {
-      background-color: #45a049;
-    }
-  </style>
-</head>
-<body>
-  <h1>Add New Hot Wheels Car</h1>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../images/Camaro.png" type="image/png">    
+    <title>Hot Wheels Car Collection</title>
 
-  <form id="carForm" enctype="multipart/form-data">
-    <label for="brand">Brand:</label>
-    <input type="text" id="brand" name="brand" required><br><br>
-
-    <label for="model_name">Model Name:</label>
-    <input type="text" id="model_name" name="model_name" required><br><br>
-
-    <label for="year_of_release">Year of Release:</label>
-    <input type="number" id="year_of_release" name="year_of_release" required><br><br>
-
-    <label for="series_id">Series ID (optional):</label>
-    <input type="number" id="series_id" name="series_id"><br><br>
-
-    <label for="car_type">Car Type:</label>
-    <input type="text" id="car_type" name="car_type"><br><br>
-
-    <label for="color">Color:</label>
-    <input type="text" id="color" name="color"><br><br>
-
-    <label for="material">Material:</label>
-    <input type="text" id="material" name="material"><br><br>
-
-    <label for="car_condition">Car Condition:</label>
-    <input type="text" id="car_condition" name="car_condition"><br><br>
-
-    <label for="rarity">Rarity:</label>
-    <input type="text" id="rarity" name="rarity"><br><br>
-
-    <label for="price_paid">Price Paid:</label>
-    <input type="number" id="price_paid" name="price_paid" step="0.01"><br><br>
-
-    <label for="current_value">Current Value:</label>
-    <input type="number" id="current_value" name="current_value" step="0.01"><br><br>
-
-    <label for="location_id">Location ID:</label>
-    <input type="number" id="location_id" name="location_id"><br><br>
-
-    <label for="notes">Notes:</label>
-    <textarea id="notes" name="notes"></textarea><br><br>
-
-    <!-- Replace photo_url with file input -->
-    <label for="car-photo">Upload Car Photo:</label>
-    <input type="file" id="car-photo" name="car-photo" accept="image/*"><br><br>
-
-    <button type="submit">Add Car</button>
-  </form>
-
-  <script>
-    const form = document.getElementById('carForm');
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault(); // Prevent default form submission
-
-      // Create a FormData object to send the file along with other form data
-      const formData = new FormData(form);
-
-      try {
-        // Send the file to the server first for Azure Blob upload
-        const uploadResponse = await fetch('/upload-photo', {
-          method: 'POST',
-          body: formData
-        });
-
-        if (!uploadResponse.ok) {
-          throw new Error('Image upload failed');
+    <style>
+      body {
+        background-image: url('/images/HotWheels-Backdrop.jpg');
+        background-position: top center;
+        background-repeat: repeat;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        text-align: center;
+        padding-top: 550px;
         }
 
-        // Get the uploaded photo URL from the server response
-        const { photoUrl } = await uploadResponse.json();
-
-        // Now send the car data to the server to add it to the database
-        const carData = {
-          brand: formData.get('brand'),
-          model_name: formData.get('model_name'),
-          year_of_release: formData.get('year_of_release'),
-          series_id: formData.get('series_id') || null,
-          car_type: formData.get('car_type') || null,
-          color: formData.get('color') || null,
-          material: formData.get('material') || null,
-          car_condition: formData.get('car_condition') || null,
-          rarity: formData.get('rarity') || null,
-          price_paid: formData.get('price_paid') || null,
-          current_value: formData.get('current_value') || null,
-          location_id: formData.get('location_id') || null,
-          notes: formData.get('notes') || null,
-          photo_url: photoUrl  // Send the URL of the uploaded photo
-        };
-
-        // Send the car data (including photo URL) to the server to store it in the database
-        const addCarResponse = await fetch('/add-car', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(carData)
-        });
-
-        if (addCarResponse.ok) {
-          alert('Car added successfully!');
-        } else {
-          alert('Error adding car.');
+      .button-container {
+        margin-top: 20px;
         }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('Error: ' + error.message);
+
+      .btn {
+        padding: 10px 20px;
+        margin: 10px;
+        font-size: 1.2em;
+        cursor: pointer;
+        border: none;
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+        }
+
+      .btn:hover {
+        background-color: #45a049;
+        }
+
+      .return-btn {
+        background-color: #2196F3;
+        }
+
+      .return-btn:hover {
+        background-color: #0b7dda;
+        }
+
+      .form-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+        }
+
+      .form-group{
+        margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }  
+      label {
+        font-weight: bold;
+        margin-bottom: 5px;
       }
-    });
-  </script>
+      input, select, textarea {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
 
-  <div class="button-container">
-    <!-- Return to the main page -->
-    <button class="btn" onclick="window.location.href='/'">Return to Main Page</button>
-  </div>
-</body>
+      .error {
+        color: red;
+        margin-top: 10px;
+        }
+    </style>
+    </head>
+  <body>
+    <h1>Add New Hot Wheels Car</h1>
+
+    <div class="form-container">
+      <form id="addCarForm" action="/add-car" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="brand">Toy Maker: </label>
+          <select id="brandID" name="brandID" required>
+            <option value="">Toy Maker</option>
+          </select><br><br>
+        </div>
+        <div class="form-group">
+          <label for="make">Vehicle Make (Chevy, Ford): </label>
+          <select id="makeID" name="makeID" required>
+            <option value="">Make</option>
+          </select><br><br>
+        </div>
+        <div class="form-group">
+          <label for="model_name">Model Name</label>
+          <input type="text" id="model_name" name="model_name">
+        </div>
+        <div class="form-group">
+          <label for="year_of_release">Year of Release</label>
+          <input type="number" id="year_of_release" name="year_of_release" value=2025 required>
+        </div>
+        <div class="form-group">
+          <label for="series_id">Series</label>
+          <input type="text" id="series" name="series">
+        </div>
+        <div class="form-group">
+          <label for="TypeID">Car Type:</label>
+          <select id="TypeID" name="car_type" required>
+            <option value="Sedan">Sedan</option>
+            <option value="Coupe">Coupe</option>
+            <option value="Convertible">Convertible</option>
+            <option value="Hatchback">Hatchback</option>
+            <option value="SUV">SUV</option>
+            <option value="Truck">Truck</option>
+            <option value="Wagon">Wagon</option>
+            <option value="Sports Car">Sports Car</option>
+            <option value="Classic Car">Classic Car</option>
+            <option value="Electric Vehicle">Electric Vehicle</option>
+            <option value="Muscle Car">Muscle Car</option>
+            <option value="Off-road Vehicle">Off-road Vehicle</option>
+            <option value="Racing Car">Racing Car</option>
+            <option value="Other">Other</option>
+          </select><br><br>
+        </div>
+        <div class="form-group">
+          <label for="color">Color</label>
+          <input type="text" id="color" name="color" required>
+          <div class="form-group">
+            <label for="materialID">Material:</label>
+            <select id="materialID" name="materialID" required>
+              <option value="">Select Material</option>
+            </select><br><br>
+          </div>
+          <div class="form-group">
+            <label for="car_condition">Car Condition:</label>
+            <select id="car_condition" name="car_condition" required>
+              <option value="Mint">Mint</option>
+              <option value="Near Mint">Near Mint</option>
+              <option value="Excellent">Excellent</option>
+              <option value="Very Good">Very Good</option>
+              <option value="Good">Good</option>
+              <option value="Fair">Fair</option>
+              <option value="Poor">Poor</option>
+              <option value="Restored">Restored</option>
+              <option value="Custom">Custom</option>
+              <option value="Other">Other</option>
+            </select><br><br>
+          </div>
+          <div class="form-group">
+            <label for="rarity">Rarity:</label>
+            <select id="rarity" name="rarity" required>
+              <option value="Common">Common</option>
+              <option value="Uncommon">Uncommon</option>
+              <option value="Rare">Rare</option>
+              <option value="Very Rare">Very Rare</option>
+              <option value="Super Rare">Super Rare</option>
+              <option value="Ultra Rare">Ultra Rare</option>
+              <option value="Limited Edition">Limited Edition</option>
+              <option value="Chase">Chase</option>
+              <option value="Prototype">Prototype</option>
+              <option value="Custom">Custom</option>
+              <option value="Other">Other</option>
+            </select><br><br>
+          </div>
+          <div class="form-group">
+            <label for="price_paid">Price Paid:</label>
+            <input type="number" id="price_paid" name="price_paid" step="0.01" min="1.29" value="1.29" required><br><br>
+          </div>
+          <div class="form-group">
+            <label for="current_value">Current Value:</label>
+            <input type="number" id="current_value" name="current_value" step="0.01" min="1.29" value="1.29" required><br><br>
+          </div>
+          <div class="form-group">
+            <label for="storageID">Storage Location:</label>
+            <select id="storageID" name="storageID" required>
+              <option value="1">Gus's Room</option>
+              <option value="2">Home Collection</option>
+              <option value="3">Display Case</option>
+              <option value="4">Storage Unit</option>
+              <option value="5">Car Show</option>
+              <option value="6">Auction</option>
+              <option value="7">Store (Retail)</option>
+              <option value="8">Warehouse</option>
+              <option value="9">Friend's Collection</option>
+              <option value="10">Online (e.g., eBay, Marketplace)</option>
+              <option value="11">Other</option>
+            </select><br><br>
+          </div>
+          <div class="form-group">
+            <label for="categoryID">Vehicle Category:</label>
+            <select id="categoryID" name="categoryID" required>
+              <option value="">Where?</option>
+            </select><br><br>
+          </div>
+          <div class="form-group">
+            <label for="purchaseID">Purchased From:</label>
+            <select id="purchaseID" name="purchaseID" required>
+              <option value="">Where?</option>
+            </select><br><br>
+          </div>
+          <div class="form-group">
+            <label for="notes">Notes</label>
+            <textarea id="notes" name="notes"></textarea>
+          </div>
+          <!-- Photo Upload Fields -->
+          <div class="form-group">
+            <label for="front-photo">Front Photo</label>
+            <input type="file" id="front-photo" name="front-photo" accept="image/*">
+          </div>
+          <div class="form-group">
+            <label for="side-photo">Side Photo</label>
+            <input type="file" id="side-photo" name="side-photo" accept="image/*">
+          </div>
+          <div class="form-group">
+            <label for="back-photo">Back Photo</label>
+            <input type="file" id="back-photo" name="back-photo" accept="image/*">
+        </div>
+        <button type="submit" class="btn">Add Car</button>
+      </form>
+      <p id="error-message" class="error"></p>
+    </div>
+    <!-- Button at the Bottom -->
+    <div class="button-container">
+      <button class="btn" onclick="window.location.href='/'">Return to Main Page</button>
+    </div>
+
+    <script>
+      document.getElementById('addCarForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent the form from submitting the traditional way
+
+      const formData = new FormData(this); // Collect form data
+
+      fetch('/add-car', {
+      method: 'POST',
+      body: formData
+      })
+      .then(response => {
+      // Check if response is OK (status 200)
+      if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.text(); // Expecting plain text (not JSON)
+      })
+      .then(data => {
+      // You can display a success message instead of redirecting
+      alert('Car added successfully!');
+      })
+      .catch(error => {
+      // Log and display error if something goes wrong
+      console.error('Error:', error);
+      alert('An error occurred. Please try again later.');
+      });
+      });
+
+      // BRANDS GETTER 
+      document.addEventListener('DOMContentLoaded', function() {
+      fetch('/brands')
+      .then(response => {
+      return response.json(); // Parse JSON
+      })
+      .then(brands => {
+
+      const brandSelect = document.getElementById('brandID');
+      brandSelect.innerHTML = '<option value="">Select Brand</option>';      
+
+      brands.forEach(brand => {
+      const option = document.createElement('option');
+      option.value = brand.BrandID;
+      option.textContent = brand.BrandName;
+      brandSelect.appendChild(option);
+      });
+      })
+      .catch(err => {
+      console.error('Error fetching brands:', err);
+      });
+      });
+
+      // MAKE GETTER
+      fetch('/make')
+        .then(response => response.json())
+        .then(make => {
+        console.log(make); // Check if the categories are being returned
+        const makeSelect = document.getElementById('makeID'); // Ensure the ID matches
+        makeSelect.innerHTML = '<option value="">Select Make</option>';  // Clear the dropdown first
+
+        make.forEach(make => {
+        const option = document.createElement('option');
+        option.value = make.MakeID;  // Set the value of the option
+        option.textContent = make.MakeName;  // Set the display text for the option
+        makeSelect.appendChild(option);  // Append the option to the select element
+        });
+        })
+        .catch(err => {
+        console.error('Error fetching make data:', err);
+      });
+
+      //MATERIALS GETTER
+      fetch('/materials')
+        .then(response => response.json())
+        .then(materials => {
+          const materialSelect = document.getElementById('materialID');  // Ensure the ID matches
+          materialSelect.innerHTML = '<option value="">Select Material</option>';
+
+          materials.forEach(material => {
+            const option = document.createElement('option');
+            option.value = material.ID;  // ID should be an integer (ID)
+            option.textContent = material.type;  // Display the name of the material
+            materialSelect.appendChild(option);
+          });
+        })
+        .catch(err => {
+        console.error('Error fetching materials:', err);
+        });
+
+        fetch('/purchases')
+          .then(response => response.json())
+          .then(purchases => {
+            const purchaseSelect = document.getElementById('purchaseID');  // Ensure the ID matches
+            purchaseSelect.innerHTML = '<option value="">Select Location</option>';
+
+            purchases.forEach(purchase => {
+              const option = document.createElement('option');
+              option.value = purchase.PurchaseID;  // ID should be an integer (ID)
+              option.textContent = purchase.Location;  // Display the name of the material
+              purchaseSelect.appendChild(option);
+            });
+          })
+          .catch(err => {
+          console.error('Error fetching purchase locations:', err);
+        });
+
+      fetch('/categories')
+        .then(response => response.json())
+        .then(categories => {
+          const categoriesSelect = document.getElementById('categoryID'); // Ensure the ID matches
+          categoriesSelect.innerHTML = '<option value="">Select Category</option>';  // Clear the dropdown first
+
+          categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.CategoryID;  // Set the value of the option
+            option.textContent = category.CategoryName;  // Set the display text for the option
+            categoriesSelect.appendChild(option);  // Append the option to the select element
+          });
+        })
+        .catch(err => {
+        console.error('Error fetching category locations:', err);
+      });
+
+    </script>
+    <script>
+      // Example: Change URL dynamically
+      if (window.history.replaceState) {
+        window.history.replaceState(null, null, "/GottaGetThereSomehow-url");
+      }
+    </script>
+  </body>
 </html>
