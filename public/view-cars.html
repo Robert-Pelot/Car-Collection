@@ -1,165 +1,292 @@
 <!DOCTYPE html>
 <!-- last edit 02092025 -->
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="../images/Camaro.png" type="image/png">
-  <title>Hot Wheels Car Collection</title>
-  <style>
-    body {
-      background-image: url('/images/HotWheels-Backdrop.jpg');
-      background-position: top center; 
-      background-repeat: repeat;
-      height: 100vh;
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      margin: 0;
-      text-align: center;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="../images/Camaro.png" type="image/png" />
+    <title>Hot Wheels Car Collection</title>
+    <style>
+      body {
+        background-image: url("/images/HotWheels-Backdrop.jpg");
+        background-position: top center;
+        background-repeat: repeat;
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column; /* Stack elements vertically */
+        justify-content: flex-start;
+        align-items: center;
+        margin: 0;
+        text-align: center;
+        height: 100vh; /* Full viewport height */
+      }
 
-    .car-list-container {
-      flex: 1;
-      width: 90%;
-      max-width: 1200px;
-      height: calc(100vh - 120px);
-      overflow-y: auto;
-      margin-top: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+      .car-list-container {
+        flex-grow: 1;
+        width: 90%;
+        max-width: 1500px;
+        overflow-y: auto;
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #car-list {
+         width: 80%; /* Or set a specific width, e.g., 95% */
+      }
+      .car-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: stretch; /* Ensure vertical stretching */
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        width: 100%;
+      }
 
-    .car-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 20px;
-      border: 1px solid #ddd;
-      padding: 10px;
-      border-radius: 8px;
-      background-color: #f9f9f9;
-      width: 100%;
-      max-width: 1000px;
-    }
+      .car-column {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Horizontally center the content inside the columns */
+        justify-content: center; /* Vertically center the content inside the columns */
+        width: 33%; /* Adjust to divide space evenly */
+        padding: 10px;
+      }
 
-    .car-column {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 33%;
-      padding: 10px;
-    }
+      .car-column .car-details {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Center text horizontally */
+        justify-content: center; /* Center text vertically */
+        text-align: center; /* Center the text */
+      }
 
-    .car-left, .car-right {
-      max-width: 250px;
-    }
+      .car-left, .car-center, .car-right {
+        flex: 3;
+      }
 
-    .car-center {
-      flex: 2;
-    }
+      .car-column img {
+        width: 100%;
+        height: auto;
+        max-width: 300px;
+        object-fit: contain;
+        justify-content: center;
+      }
 
-    .car-column img {
-      width: 100%;
-      height: auto;
-      max-width: 200px;
-      object-fit: contain;
-    }
+      .car-details {
+        text-align: left;
+        width: 100%;
+      }
 
-    .car-details {
-      text-align: left;
-      width: 100%;
-    }
+      .button-container {
+        margin-top: 10px;
+        position: sticky;
+        bottom: 0px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding-bottom: 5px;
+      }
 
-    .button-container {
-      margin-top: 20px;
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
+      .btn {
+        padding: 10px 20px;
+        font-size: 1.2em;
+        cursor: pointer;
+        border: none;
+        background-color: #4caf50;
+        color: white;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
 
-    .btn {
-      padding: 10px 20px;
-      font-size: 1.2em;
-      cursor: pointer;
-      border: none;
-      background-color: #4CAF50;
-      color: white;
-      border-radius: 5px;
-      transition: background-color 0.3s;
-    }
+      .btn:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header-banner">
+      <img
+        src="../../images/HotWheels-Banner.png"
+        alt="HotWheels Banner"
+        class="banner-img"
+      />
+    </header>
 
-    .btn:hover {
-      background-color: #45a049;
-    }
-  </style>
-</head>
-<body>
-  <header class="header-banner">
-    <img src="../../images/HotWheels-Banner.png" alt="HotWheels Banner" class="banner-img">
-  </header>
+    <div class="car-list-container">
+      <div id="car-list"></div>
+    </div>
 
-  <div class="car-list-container">
-    <div id="car-list"></div>
-  </div>
+    <div class="button-container">
+      <button class="btn" onclick="window.location.href='/'">
+        Return to Main Page
+      </button>
+    </div>
 
-  <div class="button-container">
-    <button class="btn" onclick="window.location.href='/'">Return to Main Page</button>
-  </div>
+    <script>
 
-  <script>
-    fetch('/api/cars')
-      .then(response => response.json())
-      .then(data => {
+      // Function to adjust the scroll position so the last item is not covered by the button
+      function adjustScroll() {
         const carList = document.getElementById('car-list');
-        data.forEach(car => {
+        const buttonContainer = document.getElementById('button-container');
+        
+        // Get the last car item and its bounding position
+        const lastCarItem = carList.lastElementChild;
+        if (lastCarItem) {
+          const carItemBottom = lastCarItem.getBoundingClientRect().bottom;
+          const buttonTop = buttonContainer.getBoundingClientRect().top;
+          
+          // If the last car item is covered by the button, scroll just past the button
+          if (carItemBottom > buttonTop) {
+            const scrollOffset = carItemBottom - buttonTop + 10; // +10 for some space
+            carList.scrollTop += scrollOffset;
+          }
+        }
+      }
+      // Fetch all data in parallel
+      Promise.all([
+        fetch('/api/cars').then(response => response.json()),
+        fetch('/materials').then(response => response.json()),
+        fetch('/make').then(response => response.json()),
+        fetch('/purchases').then(response => response.json()),
+        fetch('/categories').then(response => response.json()),
+        fetch('/storageTable').then(response => response.json()),
+        fetch('/carcondition').then(response => response.json()),
+        fetch('/rarity').then(response => response.json()),
+      ])
+      .then(([carsData, materialsData, makesData, purchasesData, categoriesData, categoriesStorage, conditionData, rarityData]) => {
+        
+        const materials = materialsData;
+        const makes = makesData;
+        const purchases = purchasesData;
+        const categories = categoriesData;
+        const storageLocation = categoriesStorage;
+        const condition = conditionData;
+        const rarity = rarityData;
+
+        // Create lookup maps for materials and makes
+        const materialMap = materials.reduce((acc, material) => {
+          acc[material.ID] = material.type;
+          return acc;
+        }, {});
+        const makeMap = makes.reduce((acc, make) => {
+          acc[make.MakeID] = make.MakeName;
+          return acc;
+        }, {});
+        const purchasesMap = purchases.reduce((acc, purchase) => {
+          acc[purchase.purchaseID] = purchase.Location;
+          return acc;
+        }, {});
+        const categoriesMap = categories.reduce((acc, categories) => {
+          acc[categories.CategoryID] = categories.CategoryName;
+          return acc;
+        }, {});
+        const storagelocationMap = storageLocation.reduce((acc, storageLocation) => {
+          acc[storageLocation.StorageID] = storageLocation.StorageName;
+          return acc;
+        }, {});
+        const conditionMap = condition.reduce((acc, condition) => {
+          acc[condition.CarConditionID] = condition.CarConditionName;
+          return acc;
+        }, {});
+        const rarityMap = rarity.reduce((acc, rarity) => {
+          acc[rarity.RarityID] = rarity.RarityName;
+          return acc;
+        }, {});
+
+
+
+        // Fetch photos data
+        fetch('/api/photos')
+          .then(response => response.json())
+          .then(photosData => {
+            // Default to an empty object if photosData is not defined
+            const photos = (photosData || []).reduce((acc, photo) => {
+              if (!acc[photo.CarID]) acc[photo.CarID] = [];
+              acc[photo.CarID].push(photo);
+              return acc;
+            }, {});
+
+            renderCarList(carsData, materialMap, makeMap, purchasesMap, categoriesMap, storagelocationMap, conditionMap, rarityMap, photos);
+          })
+          .catch(err => {
+            console.error('Error fetching photos:', err);
+          });
+
+      })
+      .catch(err => {
+        console.error('Error fetching data:', err);
+        document.getElementById('car-list').innerHTML = 'Failed to load cars. Please try again later.';
+      });
+
+      // Function to render the car list using the pre-fetched data
+      function renderCarList(carsData, materialMap, makeMap, purchasesMap, categoriesMap, storagelocationMap, conditionMap, rarityMap, photos) {
+        const carList = document.getElementById('car-list');
+
+        carsData.forEach(car => {
           const carItem = document.createElement('div');
           carItem.classList.add('car-item');
 
-          let carContent = `
+          // Get the relevant photos for this car
+          const carPhotos = photos[car.CarID] || [];
+          let frontPhoto = '';
+          let sidePhoto = '';
+          let backPhoto = '';
+
+          // Assign photos based on their description
+          carPhotos.forEach(photo => {
+            if (photo.PhotoDescription === 'Front photo') frontPhoto = photo.PhotoURL;
+            if (photo.PhotoDescription === 'Side photo') sidePhoto = photo.PhotoURL;
+            if (photo.PhotoDescription === 'Back photo') backPhoto = photo.PhotoURL;
+          });
+          // Get the material type and make name using the lookup maps
+          const materialType = materialMap[car.MaterialID] || 'Unknown';
+          const makeName = makeMap[car.Make] || 'Unknown Make';
+          const purchaseLocation = purchasesMap[car.purchaseID] || 'Unknown location';
+          const category = categoriesMap[car.CategoryID] || 'Unknown Category';
+          const storageLocation = storagelocationMap[car.StorageID] || 'Unknown location';
+          const carCondition = conditionMap[car.CarConditionID] || 'Unknown Condition';
+          const rarity = rarityMap[car.RarityID] || 'Unknown rarity';
+          console.log(car.purchaseLocation);
+
+          // Construct car content
+          const carContent = `
             <div class="car-column car-left">
-              ${car.front_photo_url ? `<img src="${car.front_photo_url}" alt="Front View">` : ''}
+              ${frontPhoto ? `<img src="${frontPhoto}" alt="Front View">` : ''}
+              <div class="car-details">
+                <p>${car.MaterialID ? `${materialType}` : '&nbsp;'}</p>
+                <p>${car.CarConditionID ? `Condition: ${carCondition}` : '&nbsp;'}</p>
+                <p>${car.OriginalPrice ? `Paid: $${car.OriginalPrice}` : '&nbsp;'}</p>              
+              </div>
             </div>
             <div class="car-column car-center">
               <div class="car-details">
-                <h3>${car.BrandID ? car.BrandID : ''}</h3>
-                ${car.Model ? `<p>Model: ${car.Model}</p>` : ''}
-                ${car.Make ? `<p>Make: ${car.Make}</p>` : ''}
-                ${car.Year ? `<p>Year of Release: ${car.Year}</p>` : ''}
-                ${car.Series ? `<p>Series: ${car.Series}</p>` : ''}
-                ${car.car_type ? `<p>Car Type: ${car.car_type}</p>` : ''}
-                ${car.Color ? `<p>Color: ${car.Color}</p>` : ''}
-                ${car.MaterialID ? `<p>Material: ${car.MaterialID}</p>` : ''}
-                ${car.Car_condition ? `<p>Condition: ${car.Car_condition}</p>` : ''}
-                ${car.Rarity ? `<p>Rarity: ${car.Rarity}</p>` : ''}
-                ${car.OriginalPrice ? `<p>Price Paid: $${car.OriginalPrice}</p>` : ''}
-                ${car.CurrentValue ? `<p>Current Value: $${car.CurrentValue}</p>` : ''}
-                ${car.StorageID ? `<p>Storage Location: ${car.StorageID}</p>` : ''}
-                ${car.CategoryID ? `<p>Vehicle Category: ${car.CategoryID}</p>` : ''}
-                ${car.PurchaseID ? `<p>Purchased From: ${car.PurchaseID}</p>` : ''}
-                ${car.notes ? `<p>Notes: ${car.notes}</p>` : ''}
+                <p>${car.Make ? `${makeName}` : ''} ${car.Model ? `${car.Model}` : ''}</p>
+                <p>${car.Color ? `${car.Color}` : '&nbsp;'}</p>
+                <p>${car.Year ? `Released: ${car.Year}` : '&nbsp;'}</p>
+                <p>${car.Series ? `Series: ${car.Series}` : '&nbsp;'}</p>
+                <p>${car.RarityID ? `${rarity}` : '&nbsp;'}</p>
+                <p>${car.notes ? `Notes: ${car.notes}` : '&nbsp;'}</p>
               </div>
-              ${car.side_photo_url ? `<img src="${car.side_photo_url}" alt="Side View">` : ''}
+              <div>
+                ${sidePhoto ? `<img src="${sidePhoto}" alt="Side View">` : ''}
+                <p>${car.PurchaseID ? `Bought At: ${purchaseLocation}` : '&nbsp;'}</p>
+              </div>
             </div>
             <div class="car-column car-right">
-              ${car.back_photo_url ? `<img src="${car.back_photo_url}" alt="Back View">` : ''}
+              ${backPhoto ? `<img src="${backPhoto}" alt="Back View">` : ''}
+              <p>${car.StorageID ? `Storage Location: ${storageLocation}` : '&nbsp;'}</p>
+              <p>${car.CategoryID ? `Category: ${category}` : '&nbsp;'}</p>
+              <p>${car.CurrentValue ? `Value: $${car.CurrentValue}` : '&nbsp;'}</p>              
             </div>
           `;
 
+          // Insert the constructed content into the car item
           carItem.innerHTML = carContent;
           carList.appendChild(carItem);
         });
-      })
-      .catch(err => {
-        console.error('Error fetching cars:', err);
-        const carList = document.getElementById('car-list');
-        carList.innerHTML = 'Failed to load cars. Please try again later.';
-      });
-  </script>
-</body>
+      }
+    </script>
+  </body>
 </html>

@@ -138,6 +138,59 @@ app.get("/categories", (req, res) => {
   });
 });
 
+// Endpoint to fetch materials
+app.get("/storageTable", (req, res) => {
+  connection.query("SELECT * FROM storage", (err, results) => {
+    if (err) {
+      return res.status(500).send("Error fetching categories:");
+    } else {
+      res.json(results); // Send the list of materials in JSON format
+    }
+  });
+});
+
+// Endpoint to fetch materials
+app.get("/rarity", (req, res) => {
+  connection.query("SELECT * FROM rarity", (err, results) => {
+    if (err) {
+      return res.status(500).send("Error fetching categories:");
+    } else {
+      res.json(results); // Send the list of materials in JSON format
+    }
+  });
+});
+
+// Endpoint to fetch condition
+app.get("/carcondition", (req, res) => {
+  connection.query("SELECT * FROM carcondition", (err, results) => {
+    if (err) {
+      return res.status(500).send("Error fetching conditions:");
+    } else {
+      res.json(results); // Send the list of materials in JSON format
+    }
+  });
+});
+
+// Route to fetch all photos (no CarID required)
+app.get('/api/photos', (req, res) => {
+  // Query the database to get all photos
+  const query = 'SELECT * FROM photos';
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching photo data:', err);
+      return res.status(500).json({ error: 'Failed to load photos' });
+    }
+
+    // If no photos found, return an empty array
+    if (results.length === 0) {
+      return res.json([]);
+    }
+
+    // Return the photo data
+    res.json(results);
+  });
+});
+
 // Setup multer to handle file uploads
 const storage = multer.memoryStorage(); // Store file in memory
 const upload = multer({
@@ -214,8 +267,8 @@ app.post(
       car_type, // Car type (e.g., sedan, sports car)
       color, // Color of the car
       materialID, // Material ID (e.g., plastic, metal)
-      car_condition, // Condition of the car (e.g., new, used)
-      rarity, // Rarity of the car
+      carConditionID, // Condition of the car (e.g., new, used)
+      rarityID, // Rarity of the car
       price_paid, // Price paid for the car
       current_value, // Current value of the car
       locationID, // Location ID (where it’s stored)
@@ -249,7 +302,7 @@ app.post(
 
     // SQL query to insert the car data (without photo URLs)
     const carQuery = `INSERT INTO cars 
-                    ( BrandID, Series, Year, Color, Rarity, Make, OriginalPrice, CurrentValue, Car_condition, Notes, CategoryID, StorageID, PurchaseID, MaterialID, Model) 
+                    ( BrandID, Series, Year, Color, RarityID, Make, OriginalPrice, CurrentValue, CarConditionID, Notes, CategoryID, StorageID, PurchaseID, MaterialID, Model) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     console.log("Inserting car data with the following values:");
@@ -258,11 +311,11 @@ app.post(
       series, // Model Series Name (the matchbox/hotwheel series)
       year_of_release, // Year
       color, // Color
-      rarity, // Rarity
+      rarityID, // Rarity
       makeID, // Make
       price_paid, // OriginalPrice
       current_value, // CurrentValue
-      car_condition, // Car_condition
+      carConditionID, // Car_condition
       notes, // Notes
       categoryID, // Category of vehicle (muscle car, sports car, etc)
       brandID, // BrandID
@@ -278,11 +331,11 @@ app.post(
         series, // Series
         year_of_release, // Year
         color, // Color
-        rarity, // Rarity
+        rarityID, // Rarity
         makeID, // ReleaseType
         price_paid, // OriginalPrice
         current_value, // CurrentValue
-        car_condition, // Car_condition
+        carConditionID, // Car_condition
         notes, // Notes
         categoryID, // CategoryID
         storageID, // StorageID
@@ -300,7 +353,7 @@ app.post(
         console.log("Car data inserted successfully. CarID:", carID);
 
         // Now insert the photo URLs into the 'photos' table
-        const photoQuery = `INSERT INTO photos (CarID, PhotoURL) VALUES (?, ?)`;
+        const photoQuery = `INSERT INTO photos (CarID, PhotoURL, PhotoDescription) VALUES (?, ?, ?)`;
         const photoUrls = [
           { url: frontPhotoUrl, description: "Front photo" },
           { url: sidePhotoUrl, description: "Side photo" },
@@ -309,11 +362,12 @@ app.post(
 
         photoUrls.forEach((photo) => {
           if (photo.url) {
-            console.log(`Inserting photo: ${photo.description}`);
-            connection.query(photoQuery, [carID, photo.url], (err) => {
+            console.log(`Inserting photo: ${photo.description} with URL: ${photo.url}`);
+            connection.query(photoQuery, [carID, photo.url, photo.description], (err) => {
               if (err) {
                 console.error("Error inserting photo data:", err);
               } else {
+                console.log(`Successfully inserted photo: ${photo.description}`);
               }
             });
           } else {

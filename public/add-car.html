@@ -20,24 +20,27 @@
         align-items: center;
         margin: 0;
         text-align: center;
-        padding-top: 550px;
+        padding-top: 700px;
         }
 
       .button-container {
-        margin-top: 20px;
-        }
+        margin-top: 10px;
+        position: sticky;
+        bottom: 0px;
+        left: 50%;
+        padding-bottom: 5px;
+      }
 
       .btn {
         padding: 10px 20px;
-        margin: 10px;
         font-size: 1.2em;
         cursor: pointer;
         border: none;
-        background-color: #4CAF50;
+        background-color: #4caf50;
         color: white;
         border-radius: 5px;
         transition: background-color 0.3s;
-        }
+      }
 
       .btn:hover {
         background-color: #45a049;
@@ -89,6 +92,13 @@
     </style>
     </head>
   <body>
+    <header class="header-banner">
+      <img
+        src="../../images/HotWheels-Banner.png"
+        alt="HotWheels Banner"
+        class="banner-img"
+      />
+    </header>
     <h1>Add New Hot Wheels Car</h1>
 
     <div class="form-container">
@@ -118,25 +128,6 @@
           <input type="text" id="series" name="series">
         </div>
         <div class="form-group">
-          <label for="TypeID">Car Type:</label>
-          <select id="TypeID" name="car_type" required>
-            <option value="Sedan">Sedan</option>
-            <option value="Coupe">Coupe</option>
-            <option value="Convertible">Convertible</option>
-            <option value="Hatchback">Hatchback</option>
-            <option value="SUV">SUV</option>
-            <option value="Truck">Truck</option>
-            <option value="Wagon">Wagon</option>
-            <option value="Sports Car">Sports Car</option>
-            <option value="Classic Car">Classic Car</option>
-            <option value="Electric Vehicle">Electric Vehicle</option>
-            <option value="Muscle Car">Muscle Car</option>
-            <option value="Off-road Vehicle">Off-road Vehicle</option>
-            <option value="Racing Car">Racing Car</option>
-            <option value="Other">Other</option>
-          </select><br><br>
-        </div>
-        <div class="form-group">
           <label for="color">Color</label>
           <input type="text" id="color" name="color" required>
           <div class="form-group">
@@ -146,34 +137,13 @@
             </select><br><br>
           </div>
           <div class="form-group">
-            <label for="car_condition">Car Condition:</label>
-            <select id="car_condition" name="car_condition" required>
-              <option value="Mint">Mint</option>
-              <option value="Near Mint">Near Mint</option>
-              <option value="Excellent">Excellent</option>
-              <option value="Very Good">Very Good</option>
-              <option value="Good">Good</option>
-              <option value="Fair">Fair</option>
-              <option value="Poor">Poor</option>
-              <option value="Restored">Restored</option>
-              <option value="Custom">Custom</option>
-              <option value="Other">Other</option>
+            <label for="carConditionID">Car Condition:</label>
+            <select id="carConditionID" name="carConditionID" required>
             </select><br><br>
           </div>
           <div class="form-group">
-            <label for="rarity">Rarity:</label>
-            <select id="rarity" name="rarity" required>
-              <option value="Common">Common</option>
-              <option value="Uncommon">Uncommon</option>
-              <option value="Rare">Rare</option>
-              <option value="Very Rare">Very Rare</option>
-              <option value="Super Rare">Super Rare</option>
-              <option value="Ultra Rare">Ultra Rare</option>
-              <option value="Limited Edition">Limited Edition</option>
-              <option value="Chase">Chase</option>
-              <option value="Prototype">Prototype</option>
-              <option value="Custom">Custom</option>
-              <option value="Other">Other</option>
+            <label for="rarityID">Rarity:</label>
+            <select id="rarityID" name="rarityID" required>
             </select><br><br>
           </div>
           <div class="form-group">
@@ -187,17 +157,6 @@
           <div class="form-group">
             <label for="storageID">Storage Location:</label>
             <select id="storageID" name="storageID" required>
-              <option value="1">Gus's Room</option>
-              <option value="2">Home Collection</option>
-              <option value="3">Display Case</option>
-              <option value="4">Storage Unit</option>
-              <option value="5">Car Show</option>
-              <option value="6">Auction</option>
-              <option value="7">Store (Retail)</option>
-              <option value="8">Warehouse</option>
-              <option value="9">Friend's Collection</option>
-              <option value="10">Online (e.g., eBay, Marketplace)</option>
-              <option value="11">Other</option>
             </select><br><br>
           </div>
           <div class="form-group">
@@ -293,7 +252,6 @@
       fetch('/make')
         .then(response => response.json())
         .then(make => {
-        console.log(make); // Check if the categories are being returned
         const makeSelect = document.getElementById('makeID'); // Ensure the ID matches
         makeSelect.innerHTML = '<option value="">Select Make</option>';  // Clear the dropdown first
 
@@ -359,6 +317,59 @@
         .catch(err => {
         console.error('Error fetching category locations:', err);
       });
+
+      fetch('/storageTable')
+        .then(response => response.json())
+        .then(categories => {
+          const categoriesSelect = document.getElementById('storageID'); // Ensure the ID matches
+          categoriesSelect.innerHTML = '<option value="">Select storage location</option>';  // Clear the dropdown first
+
+          categories.forEach(storage => {
+            const option = document.createElement('option');
+            option.value = storage.StorageID;  // Set the value of the option
+            option.textContent = storage.StorageName;  // Set the display text for the option
+            categoriesSelect.appendChild(option);  // Append the option to the select element
+          });
+        })
+        .catch(err => {
+        console.error('Error fetching category locations:', err);
+      });
+
+      fetch('/rarity')
+        .then(response => response.json())
+        .then(rarity => {
+          const raritySelect = document.getElementById('rarityID'); // Ensure the ID matches
+          raritySelect.innerHTML = '<option value="">Select model rarity</option>';  // Clear the dropdown first
+
+          rarity.forEach(rarity => {
+            const option = document.createElement('option');
+            option.value = rarity.RarityID;  // Set the value of the option
+            option.textContent = rarity.RarityName;  // Set the display text for the option
+            raritySelect.appendChild(option);  // Append the option to the select element
+          });
+        })
+        .catch(err => {
+          console.error('Error fetching category locations:', err);
+        });
+
+
+        fetch('/carcondition')
+        .then(response => response.json())
+        .then(conditionData => {
+          const conditionSelect = document.getElementById('carConditionID'); // Ensure the ID matches
+          conditionSelect.innerHTML = '<option value="">Select model condition</option>';  // Clear the dropdown first
+
+          conditionData.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.CarConditionID;  // Set the value of the option
+            option.textContent = item.CarConditionName;  // Set the display text for the option
+            conditionSelect.appendChild(option);  // Append the option to the select element
+          });
+        })
+        .catch(err => {
+          console.error('Error fetching category locations:', err);
+        });
+
 
     </script>
     <script>

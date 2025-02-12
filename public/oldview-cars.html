@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<!-- last edit 02092025 -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="../images/Camaro.png" type="image/png">
+  <title>Hot Wheels Car Collection</title>
+  <style>
+    body {
+      background-image: url('/images/HotWheels-Backdrop.jpg');
+      background-position: top center; 
+      background-repeat: repeat;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      text-align: center;
+    }
+
+    .car-list-container {
+      flex: 1;
+      width: 90%;
+      max-width: 1200px;
+      height: calc(100vh - 120px);
+      overflow-y: auto;
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .car-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    .car-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 50%;
+      padding: 10px;
+    }
+
+    .car-left, .car-right {
+      flex: 3;
+    }
+
+    .car-center {
+      flex: 3;
+    }
+
+    .car-column img {
+      width: 100%;
+      height: auto;
+      max-width: 200px;
+      object-fit: contain;
+    }
+
+    .car-details {
+      text-align: left;
+      width: 100%;
+    }
+
+    .button-container {
+      margin-top: 20px;
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .btn {
+      padding: 10px 20px;
+      font-size: 1.2em;
+      cursor: pointer;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <header class="header-banner">
+    <img src="../../images/HotWheels-Banner.png" alt="HotWheels Banner" class="banner-img">
+  </header>
+
+  <div class="car-list-container">
+    <div id="car-list"></div>
+  </div>
+
+  <div class="button-container">
+    <button class="btn" onclick="window.location.href='/'">Return to Main Page</button>
+  </div>
+
+  <script>
+    
+    // Fetch materials list first
+      fetch('/api/cars')
+      .then(response => response.json())
+      .then(data => {
+        const carList = document.getElementById('car-list');
+        data.forEach(car => {
+          const carItem = document.createElement('div');
+          carItem.classList.add('car-item');
+  
+          // Fetch photos for each car based on CarID
+          fetch(`/api/photos?CarID=${car.CarID}`)
+            .then(response => response.json())
+            .then(photos => {
+              // If photos is not an array or is empty, skip this car
+              if (!Array.isArray(photos) || photos.length === 0) {
+                return; // Skip this car and don't add it to the car list
+              }
+  
+              let frontPhoto = '';
+              let sidePhoto = '';
+              let backPhoto = '';
+  
+              // Loop through photos to assign them to the appropriate variables
+              photos.forEach(photo => {
+                if (photo.PhotoDescription === 'Front photo') {
+                  frontPhoto = photo.PhotoURL;
+                } else if (photo.PhotoDescription === 'Side photo') {
+                  sidePhoto = photo.PhotoURL;
+                } else if (photo.PhotoDescription === 'Back photo') {
+                  backPhoto = photo.PhotoURL;
+                }
+              });
+
+
+              fetch('/materials')
+                .then(response => response.json())
+                .then(materials => {
+                  const material = materials.find(mat => mat.ID === car.MaterialID);
+                  const materialType = material ? material.type : 'Unknown';
+                fetch('/make')
+                  .then(response => response.json())
+                  .then(makes => {
+                    const make = makes.find(mk => mk.makeID == car.MakeID);  // Adjusted to match 'ID'
+                    const makeName = make ? make.MakeName : 'Unknown Make';
+  
+              // Construct car content
+              let carContent = `
+                <div class="car-column car-left">
+                  ${frontPhoto ? `<img src="${frontPhoto}" alt="Front View">` : ''}
+                  <div class="car-details">
+                    ${car.Color ? `<p>Color: ${car.Color}</p>` : ''}
+                    ${car.MaterialID ? `<p>Material: ${materialType}</p>` : ''}
+                    ${car.Car_condition ? `<p>Condition: ${car.Car_condition}</p>` : ''}
+                  </div>
+                </div>
+                <div class="car-column car-center">
+                  <div class="car-details">
+                    ${car.Make ? `<p>${makeName}</p>` : ''}                    
+                    ${car.Model ? `<p>Model: ${car.Model}</p>` : ''}
+                    ${car.Year ? `<p>Year of Release: ${car.Year}</p>` : ''}
+                    ${car.Series ? `<p>Series: ${car.Series}</p>` : ''}
+                    ${car.car_type ? `<p>Car Type: ${car.car_type}</p>` : ''}
+                    ${car.Rarity ? `<p>Rarity: ${car.Rarity}</p>` : ''}
+                    ${car.OriginalPrice ? `<p>Price Paid: $${car.OriginalPrice}</p>` : ''}
+                    ${car.CurrentValue ? `<p>Current Value: $${car.CurrentValue}</p>` : ''}
+                    ${car.notes ? `<p>Notes: ${car.notes}</p>` : ''}
+                  </div>
+                  ${sidePhoto ? `<img src="${sidePhoto}" alt="Side View">` : ''}
+                  <h3>${car.BrandID ? car.BrandID : ''}</h3>
+                </div>
+                <div class="car-column car-right">
+                  ${backPhoto ? `<img src="${backPhoto}" alt="Back View">` : ''}
+                  ${car.StorageID ? `<p>Storage Location: ${car.StorageID}</p>` : ''}
+                  ${car.CategoryID ? `<p>Vehicle Category: ${car.CategoryID}</p>` : ''}
+                  ${car.PurchaseID ? `<p>Purchased From: ${car.PurchaseID}</p>` : ''}
+                </div>
+              `;
+  
+              // Insert the constructed content into the car item
+              carItem.innerHTML = carContent;
+              carList.appendChild(carItem);
+            })
+            .catch(err => {
+              console.error('Error fetching makes:', err);
+            });
+          })
+          .catch(err => {
+            console.error('Error fetching materials:', err);
+          })      
+        })
+          .catch(err => {
+            console.error('Error fetching photos:', err);
+          });
+      });
+    })
+    .catch(err => {
+      console.error('Error fetching cars or materials:', err);
+      const carList = document.getElementById('car-list');
+      carList.innerHTML = 'Failed to load cars. Please try again later.';
+    });
+  </script>
+</body>
+</html>
