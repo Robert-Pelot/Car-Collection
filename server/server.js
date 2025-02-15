@@ -68,6 +68,11 @@ app.get("/view-cars", (req, res) => {
   res.sendFile(path.join(__dirname, "../public", "view-cars.html"));
 });
 
+// Route for the Edit Cars page
+app.get("/edit-cars", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public", "edit-cars.html"));
+});
+
 // Endpoint to fetch all cars (used in the "view cars" page)
 app.get("/api/cars", (req, res) => {
   const query = "SELECT * FROM Cars";
@@ -81,6 +86,27 @@ app.get("/api/cars", (req, res) => {
     } else {
       res.json(result);
     }
+  });
+});
+
+// Endpoint to fetch a car by CarID (used in the "edit car" form)
+app.get("/api/car", (req, res) => {
+  const CarID = req.query.carID; // Get CarID from query parameters
+  if (!CarID) {
+    return res.status(400).send({ error: "CarID is required" });
+  }
+  const query = "SELECT * FROM Cars WHERE carID = ?"; // Query to get the specific car
+
+  connection.query(query, [CarID], (err, result) => {
+    if (err) {
+      console.error("Error fetching car from DB:", err);
+      return res.status(500).send({ error: "Database error", details: err.message });
+    }
+    if (result.length === 0) {
+      console.log('No car found with ID:', CarID);
+      return res.status(404).send({ error: "Car not found" });
+    }
+    res.json(result[0]); // Send the first (and only) result
   });
 });
 
@@ -302,7 +328,7 @@ app.post(
 
     // SQL query to insert the car data (without photo URLs)
     const carQuery = `INSERT INTO cars 
-                    ( BrandID, Series, Year, Color, RarityID, Make, OriginalPrice, CurrentValue, CarConditionID, Notes, CategoryID, StorageID, PurchaseID, MaterialID, Model) 
+                    ( BrandID, Series, Year, Color, RarityID, MakeID, OriginalPrice, CurrentValue, CarConditionID, Notes, CategoryID, StorageID, PurchaseID, MaterialID, Model) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     console.log("Inserting car data with the following values:");

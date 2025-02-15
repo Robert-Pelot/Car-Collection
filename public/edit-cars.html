@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Hot Wheels Car</title>
+    <style>
+        /* Add your styles here */
+    </style>
+</head>
+<body>
+    <header>
+        <img src="../../images/HotWheels-Banner.png" alt="HotWheels Banner" class="banner-img" />
+    </header>
+    <h1>Edit Hot Wheels Car</h1>
+
+    <!-- Form to enter carID to select a car -->
+    <div class="form-container">
+        <form id="selectCarForm">
+            <div class="form-group">
+                <label for="CarID">Enter Car ID to Edit: </label>
+                <input type="text" id="CarID" name="CarID" required>
+            </div>
+            <button type="submit" class="btn">Select Car</button>
+        </form>
+    </div>
+
+    <div id="editCarFormContainer" class="form-container" style="display:none;">
+        <h2>Edit Car Details</h2>
+        <form id="editCarForm" action="/edit-car" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="Brand">Toy Maker: </label>
+                <select id="BrandID" name="BrandID" required></select>
+            </div>
+            <div class="form-group">
+                <label for="MakeID">Vehicle Make (Chevy, Ford): </label>
+                <select id="MakeID" name="MakeID" required></select>
+            </div>
+            <div class="form-group">
+                <label for="Model">Model Name</label>
+                <input type="text" id="Model" name="Model" required>
+            </div>
+            <!-- Add other fields as needed -->
+            <button type="submit" class="btn">Update Car</button>
+        </form>
+    </div>
+
+    <script>
+        // Handle selecting a car by ID
+        document.getElementById('selectCarForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const carID = document.getElementById('CarID').value.trim();
+            if (!carID) {
+                alert("Please enter a valid Car ID");
+                return;
+            }
+
+            // Fetch the car data based on carID
+            fetch(`/api/car?carID=${carID}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Car not found');
+                    }
+                    return response.json();
+                })
+                .then(car => {
+                    console.log('Car data', car);
+                    console.log('BrandID:', car.BrandID);
+                    console.log('MakeID:', car.MakeID);
+                    console.log('Model:', car.Model);
+
+                    document.getElementById('BrandID').value = car.BrandID;
+                    document.getElementById('MakeID').value = car.MakeID;
+                    document.getElementById('Model').value = car.Model;
+                    // Show the form to edit the car and populate with car data
+                    document.getElementById('selectCarForm').style.display = 'none';
+                    document.getElementById('editCarFormContainer').style.display = 'block';
+
+                    // Populate the form fields with the car data
+                    document.getElementById('BrandID').value = car.BrandID;
+                    document.getElementById('MakeID').value = car.MakeID;
+                    document.getElementById('Model').value = car.Model;
+                    // document.getElementById('Year').value = car.Year || '';
+                    // document.getElementById('Color').value = car.Color || '';
+                    // Add other fields as needed
+                })
+                .catch(err => {
+                    console.error('Error fetching car data:', err);
+                    alert("Car not found. Please try again.");
+                });
+        });
+
+
+        // Handle form submission to update the car data
+        document.getElementById('editCarForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+
+            fetch('/edit-car', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert('Car updated successfully!');
+                window.location.href = '/'; // Redirect to the main page or car list
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred: ' + error.message); // More detailed error message
+            });
+        });
+    </script>
+</body>
+</html>

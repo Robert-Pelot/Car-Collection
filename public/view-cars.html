@@ -146,17 +146,47 @@
       }
       // Fetch all data in parallel
       Promise.all([
-        fetch('/api/cars').then(response => response.json()),
-        fetch('/materials').then(response => response.json()),
-        fetch('/make').then(response => response.json()),
-        fetch('/purchases').then(response => response.json()),
-        fetch('/categories').then(response => response.json()),
-        fetch('/storageTable').then(response => response.json()),
-        fetch('/carcondition').then(response => response.json()),
-        fetch('/rarity').then(response => response.json()),
+        fetch('/api/cars').then(response => response.text())
+          .then(text => {
+            try {
+              const data = JSON.parse(text);
+              return data; // Return the data for use in the next .then()
+            } catch (e) {
+              console.error('Failed to parse JSON from /api/cars:', e, text);
+              throw new Error('Error parsing /api/cars data');
+            }
+          }),
+        fetch('/materials').then(response => response.json()).catch(err => {
+          console.error('Error fetching /materials:', err);
+          return []; // Return empty array if /materials fails
+        }),
+        fetch('/make').then(response => response.json()).catch(err => {
+          console.error('Error fetching /make:', err);
+          return []; // Return empty array if /make fails
+        }),
+        fetch('/purchases').then(response => response.json()).catch(err => {
+          console.error('Error fetching /purchases:', err);
+          return []; // Return empty array if /purchases fails
+        }),
+        fetch('/categories').then(response => response.json()).catch(err => {
+          console.error('Error fetching /categories:', err);
+          return []; // Return empty array if /categories fails
+        }),
+        fetch('/storageTable').then(response => response.json()).catch(err => {
+          console.error('Error fetching /storageTable:', err);
+          return []; // Return empty array if /storageTable fails
+        }),
+        fetch('/carcondition').then(response => response.json()).catch(err => {
+          console.error('Error fetching /carcondition:', err);
+          return []; // Return empty array if /carcondition fails
+        }),
+        fetch('/rarity').then(response => response.json()).catch(err => {
+          console.error('Error fetching /rarity:', err);
+          return []; // Return empty array if /rarity fails
+        })
       ])
       .then(([carsData, materialsData, makesData, purchasesData, categoriesData, categoriesStorage, conditionData, rarityData]) => {
-        
+
         const materials = materialsData;
         const makes = makesData;
         const purchases = purchasesData;
@@ -240,21 +270,20 @@
             if (photo.PhotoDescription === 'Side photo') sidePhoto = photo.PhotoURL;
             if (photo.PhotoDescription === 'Back photo') backPhoto = photo.PhotoURL;
           });
-          // Get the material type and make name using the lookup maps
           const materialType = materialMap[car.MaterialID] || 'Unknown';
-          const makeName = makeMap[car.Make] || 'Unknown Make';
+          const makeName = makeMap[car.MakeID] || 'Unknown Make';
           const purchaseLocation = purchasesMap[car.purchaseID] || 'Unknown location';
           const category = categoriesMap[car.CategoryID] || 'Unknown Category';
           const storageLocation = storagelocationMap[car.StorageID] || 'Unknown location';
           const carCondition = conditionMap[car.CarConditionID] || 'Unknown Condition';
           const rarity = rarityMap[car.RarityID] || 'Unknown rarity';
-          console.log(car.purchaseLocation);
 
           // Construct car content
           const carContent = `
             <div class="car-column car-left">
               ${frontPhoto ? `<img src="${frontPhoto}" alt="Front View">` : ''}
               <div class="car-details">
+
                 <p>${car.MaterialID ? `${materialType}` : '&nbsp;'}</p>
                 <p>${car.CarConditionID ? `Condition: ${carCondition}` : '&nbsp;'}</p>
                 <p>${car.OriginalPrice ? `Paid: $${car.OriginalPrice}` : '&nbsp;'}</p>              
@@ -262,7 +291,8 @@
             </div>
             <div class="car-column car-center">
               <div class="car-details">
-                <p>${car.Make ? `${makeName}` : ''} ${car.Model ? `${car.Model}` : ''}</p>
+                <p>${car.CarID ? `Record Number: ${car.CarID}` : '&nbsp;'}</p>                
+                <p>${car.MakeID ? `${makeName}` : ''} ${car.Model ? `${car.Model}` : ''}</p>
                 <p>${car.Color ? `${car.Color}` : '&nbsp;'}</p>
                 <p>${car.Year ? `Released: ${car.Year}` : '&nbsp;'}</p>
                 <p>${car.Series ? `Series: ${car.Series}` : '&nbsp;'}</p>
