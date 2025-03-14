@@ -5,10 +5,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hot Wheels Car Collection</title>
-  <link rel="icon" href="../images/Camaro.png" type="image/png">
+  <link rel="icon" href="./images/Camaro.png" type="image/png">
   <style>
     body {
-		background-image: url('/images/Camaro.png');
+		background-image: url('./images/Camaro.png');
 		background-position: top center; /* Centers the background image */
 		background-repeat: no-repeat;
 		height: auto; /* Ensures the body takes up the full height of the viewport */
@@ -51,7 +51,7 @@
 <body>
 
   <h1>Welcome to Hot Wheels Car Collection</h1>
-  <h2>Featured Car: Hot Rod</h2>  <img src="https://robertusasa.blob.core.windows.net/car-images/Car1.jpg" alt="So Fast!" width="300" />
+  <h2>Featured Car: Hot Rod</h2>  <img src="https://robertusasa.blob.core.windows.net/car-images/1739155049334-Car1.jpg" alt="So Fast!" width="300" />
 
   <div class="button-container">
     <!-- Button to navigate to the add-car page -->
@@ -64,11 +64,5 @@
     <button class="btn" onclick="window.location.href='/edit-cars'">Edit Cars</button>
 
   </div>
-  <script>
-    // Example: Change URL dynamically
-    if (window.history.replaceState) {
-      window.history.replaceState(null, null, "/GottaGetThereSomehow-url");
-    }
-  </script>
 </body>
 </html>

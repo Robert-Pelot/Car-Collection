@@ -11,8 +11,6 @@ require("dotenv").config(); // Use environment variables from .env file
 const app = express();
 const port = 3000;
 
-
-
 // Azure Blob Storage Setup
 const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
 const containerName = "car-images"; // The container where you will store the images
@@ -23,7 +21,8 @@ const containerClient = blobServiceClient.getContainerClient(containerName);
 const certPath = process.env.DB_SSL_CA_PATH;;
 const caCert = fs.readFileSync(certPath);
 
-app.use(express.json());
+// Serve static files from the 'public' directory
+
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "../public")));
@@ -55,22 +54,22 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Main page route
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public", "index.html"));
+  res.sendFile(path.join(__dirname, "./public", "index.html"));
 });
 
 // Route for the Add Car page
 app.get("/add-car", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public", "add-car.html"));
+  res.sendFile(path.join(__dirname, "./public", "add-car.html"));
 });
 
 // Route for the View Cars page
 app.get("/view-cars", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public", "view-cars.html"));
+  res.sendFile(path.join(__dirname, "./public", "view-cars.html"));
 });
 
 // Route for the Edit Cars page
 app.get("/edit-cars", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public", "edit-cars.html"));
+  res.sendFile(path.join(__dirname, "./public", "edit-cars.html"));
 });
 
 // Endpoint to fetch all cars (used in the "view cars" page)
@@ -330,25 +329,6 @@ app.post(
     const carQuery = `INSERT INTO cars 
                     ( BrandID, Series, Year, Color, RarityID, MakeID, OriginalPrice, CurrentValue, CarConditionID, Notes, CategoryID, StorageID, PurchaseID, MaterialID, Model) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-
-    console.log("Inserting car data with the following values:");
-    console.log([
-      brandID, // Brand Name
-      series, // Model Series Name (the matchbox/hotwheel series)
-      year_of_release, // Year
-      color, // Color
-      rarityID, // Rarity
-      makeID, // Make
-      price_paid, // OriginalPrice
-      current_value, // CurrentValue
-      carConditionID, // Car_condition
-      notes, // Notes
-      categoryID, // Category of vehicle (muscle car, sports car, etc)
-      brandID, // BrandID
-      storageID, // StorageID
-      purchaseID, // PurchaseID (where)
-      materialID, // MaterialID
-    ]);
 
     connection.query(
       carQuery,
